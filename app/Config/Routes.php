@@ -1,0 +1,69 @@
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+/**
+ * @var RouteCollection $routes
+ */
+
+// Ruta principal
+$routes->get('/', 'Home::index');
+
+
+// =========================
+// 🧍‍♂️ RUTAS DE USUARIOS
+// =========================
+$routes->group('usuarios', function($routes) {
+    $routes->get('/', 'Usuario::dashboard_usuario');
+    $routes->get('dashboard', 'Usuario::dashboard_usuario');
+    $routes->get('mis_clases', 'Usuario::mis_clases');
+    $routes->get('reservar', 'Usuario::reservar');
+    $routes->get('perfil', 'Usuario::perfil');
+});
+
+
+// =========================
+// 🛠️ RUTAS DE ADMINISTRADOR
+// =========================
+$routes->group('admin', ['namespace' => 'App\Controllers'], function($routes) {
+
+    // Dashboard principal
+    $routes->get('/', 'Admin::dashboard_admin');
+    $routes->get('dashboard', 'Admin::dashboard_admin');
+
+    // Gestión general
+    $routes->get('usuarios', 'Admin::usuarios');
+    $routes->get('clases', 'Admin::clases');
+    $routes->get('reservas', 'Admin::reservas');
+
+    // --- Gestión de usuarios ---
+    $routes->get('editar_usuario/(:num)', 'Admin::editar_usuario/$1');
+    $routes->post('actualizar_usuario/(:num)', 'Admin::actualizar_usuario/$1');
+    $routes->get('eliminar_usuario/(:num)', 'Admin::eliminar_usuario/$1');
+
+    // --- Gestión de clases ---
+    $routes->get('editar_clase/(:num)', 'Admin::editar_clase/$1');
+    $routes->get('eliminar_clase/(:num)', 'Admin::eliminar_clase/$1');
+
+    // --- Gestión de reservas ---
+    $routes->get('editar_reserva/(:num)', 'Admin::editar_reserva/$1');
+    $routes->get('eliminar_reserva/(:num)', 'Admin::eliminar_reserva/$1');
+});
+
+
+// -- PAGINA --
+$routes->get('/quienes_somos', 'QuienesSomos::index');
+$routes->get('/servicios', 'Servicios::index');
+$routes->get('/planes', 'Planes::index');
+$routes->get('/inscripcion', 'Inscripcion::index');
+$routes->post('/inscripcion/guardar', 'Inscripcion::guardar');
+$routes->get('/contacto', 'Contacto::index');
+
+$routes->get('login', 'Auth::index');          //  formulario
+$routes->post('login/acceder', 'Auth::acceder'); // login
+$routes->get('logout', 'Auth::salir');
+
+$routes->get('pagina/create_l', 'Auth::crear_usuario');
+$routes->post('/', 'Auht::guardar');
+
+ 
