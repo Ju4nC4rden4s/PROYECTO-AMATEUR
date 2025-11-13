@@ -5,6 +5,6 @@ class QuienesSomos extends BaseController
 {
     public function index()
     {
-        return view('quienes_somos');
+        return view('inicio/quienes_somos');
     }
 }

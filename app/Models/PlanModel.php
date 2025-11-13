@@ -7,7 +7,14 @@ use CodeIgniter\Model;
 class PlanModel extends Model
 {
     protected $table = 'planes';
-    protected $primaryKey = 'id';
-    protected $allowedFields = ['nombre', 'descripcion', 'precio', 'total_clases', 'duracion_dias', 'estado'];
+    protected $primaryKey = 'id_planes';
+
+    protected $allowedFields = [
+        'nombre',
+        'descripcion',
+        'precio',
+        'total_clases'
+    ];
+
     protected $useTimestamps = false;
 }

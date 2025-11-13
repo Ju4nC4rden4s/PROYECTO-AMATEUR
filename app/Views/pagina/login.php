@@ -12,7 +12,8 @@
       <div class="alert alert-danger"><?= esc(session()->getFlashdata('error')) ?></div>
     <?php endif; ?>
 
-    <form class="formulario" method="post" action="<?= site_url('login/acceder') ?>">
+    <form class="formulario" method="post" action="<?= base_url('login/acceder') ?>">
+
       <?= csrf_field() ?>
 
       <label for="username">Usuario:</label>

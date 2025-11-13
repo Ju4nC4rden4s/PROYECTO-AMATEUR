@@ -5,6 +5,6 @@ class Servicios extends BaseController
 {
     public function index()
     {
-        return view('servicios');
+        return view('inicio/servicios');
     }
 }

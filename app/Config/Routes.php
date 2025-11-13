@@ -6,7 +6,9 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Ruta principal
+// =========================
+// 🏠 RUTA PRINCIPAL
+// =========================
 $routes->get('/', 'Home::index');
 
 
@@ -29,7 +31,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers'], function($routes) {
 
     // Dashboard principal
     $routes->get('/', 'Admin::dashboard_admin');
-    $routes->get('dashboard', 'Admin::dashboard_admin');
+    $routes->get('dashboard_admin', 'Admin::dashboard_admin');
 
     // Gestión general
     $routes->get('usuarios', 'Admin::usuarios');
@@ -50,20 +52,23 @@ $routes->group('admin', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('eliminar_reserva/(:num)', 'Admin::eliminar_reserva/$1');
 });
 
+// =========================
+// 📄 PÁGINAS DEL SITIO
+// =========================
+$routes->get('inicio', 'Home::index');
+$routes->get('inicio/quienes_somos', 'QuienesSomos::index');
+$routes->get('inicio/servicios', 'Servicios::index');
+$routes->get('inicio/planes', 'Planes::index');
+$routes->get('inicio/contacto', 'Contacto::index');
 
-// -- PAGINA --
-$routes->get('/quienes_somos', 'QuienesSomos::index');
-$routes->get('/servicios', 'Servicios::index');
-$routes->get('/planes', 'Planes::index');
-$routes->get('/inscripcion', 'Inscripcion::index');
-$routes->post('/inscripcion/guardar', 'Inscripcion::guardar');
-$routes->get('/contacto', 'Contacto::index');
 
-$routes->get('login', 'Auth::index');          //  formulario
-$routes->post('login/acceder', 'Auth::acceder'); // login
-$routes->get('logout', 'Auth::salir');
+// =========================
+// 🔐 LOGIN
+// =========================
+$routes->get('login', 'Auth::index');                // vista login
+$routes->post('login/acceder', 'Auth::acceder');     // procesar login
+$routes->get('logout', 'Auth::salir');               // cerrar sesión
 
+// Crear usuario
 $routes->get('pagina/create_l', 'Auth::crear_usuario');
-$routes->post('/', 'Auht::guardar');
-
- 
+$routes->post('pagina/guardar', 'Auth::guardar');

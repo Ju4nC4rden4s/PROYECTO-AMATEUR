@@ -5,6 +5,6 @@ class Planes extends BaseController
 {
     public function index()
     {
-        return view('planes');
+        return view('inicio/planes');
     }
 }

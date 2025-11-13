@@ -7,7 +7,8 @@ use CodeIgniter\Model;
 class ClaseModel extends Model
 {
     protected $table = 'clases';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_clases';
+
     protected $allowedFields = [
         'nombre',
         'descripcion',
@@ -16,35 +17,24 @@ class ClaseModel extends Model
         'hora_fin',
         'cupo_maximo',
         'cupo_disponible',
-        'estado'
+        'id_rol',
+        'id_planes'
     ];
+
     protected $useTimestamps = false;
 
-    // =========================
-    // 📚 OBTENER CLASES
-    // =========================
-    // Todas las clases
+    // Obtener todas
     public function getAll()
     {
         return $this->findAll();
     }
 
-    // Obtener clase por ID
     public function getById($id)
     {
         return $this->find($id);
     }
 
-    // Clases con cupos disponibles
-    public function getDisponibles()
-    {
-        return $this->where('cupo_disponible >', 0)->findAll();
-    }
-
-    // =========================
-    // 🗓️ GESTIÓN DE CUPOS
-    // =========================
-    // Reducir un cupo al reservar
+    // Cupos
     public function reducirCupo($id)
     {
         $clase = $this->find($id);
@@ -55,7 +45,6 @@ class ClaseModel extends Model
         return false;
     }
 
-    // Incrementar cupo si se cancela
     public function incrementarCupo($id)
     {
         $clase = $this->find($id);

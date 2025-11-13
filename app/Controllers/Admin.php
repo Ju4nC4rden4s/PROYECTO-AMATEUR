@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\AdminModel;
-use App\Models\UsuarioModel;
+use App\Models\DatosUsuarioModel;
+use App\Models\PerfilModel;
 use App\Models\ClaseModel;
 use App\Models\ReservaModel;
 use App\Models\PlanModel;
@@ -16,50 +16,54 @@ class Admin extends BaseController
     // =========================
     public function dashboard_admin()
     {
-        $usuarioModel = new UsuarioModel();
+        $usuarioModel = new DatosUsuarioModel();
         $claseModel = new ClaseModel();
         $reservaModel = new ReservaModel();
 
         $data = [
-            'usuarios' => count($usuarioModel->getAll()),
-            'clases' => count($claseModel->getAll()),
-            'reservas' => count($reservaModel->getAll()),
+            'usuarios' => $usuarioModel->countAll(),
+            'clases'   => $claseModel->countAll(),
+            'reservas' => $reservaModel->countAll(),
         ];
 
-        return view('admin/dashboard', $data);
+        return view('admin/dashboard_admin', $data);
     }
 
 
     // =========================
-    // 👥 GESTIÓN DE USUARIOS
+    // 👥 LISTA DE USUARIOS
     // =========================
     public function usuarios()
     {
-        $usuarioModel = new UsuarioModel();
-        $planModel = new PlanModel();
+        $usuarioModel = new DatosUsuarioModel();
+        $perfilModel  = new PerfilModel();
+        $planModel    = new PlanModel();
 
         $usuarios = $usuarioModel->findAll();
 
-        foreach ($usuarios as &$usuario) {
-            $usuario['plan_pagado'] = 'Sin plan';
-            $usuario['clases_restantes'] = 0;
+        foreach ($usuarios as &$u) {
 
-            if (!empty($usuario['plan_id'])) {
-                $plan = $planModel->find($usuario['plan_id']);
-                if ($plan) {
-                    $usuario['plan_pagado'] = $plan['nombre'];
-                    $usuario['clases_restantes'] = max(0, $plan['total_clases'] - $usuario['clases_usadas']);
-                }
-            }
+            // obtener usuario en tabla perfil (rol, usuario, contraseña)
+            $perfil = $perfilModel->where('id_usuario', $u['id_usuario'])->first();
+            $u['rol'] = $perfil ? $perfil['id_rol'] : 'Sin perfil';
+
+            // obtener plan
+            $plan = $planModel->where('id_planes', $u['id_usuario'])->first();
+            $u['plan'] = $plan ? $plan['nombre'] : 'Sin plan asignado';
         }
 
         return view('admin/usuarios', ['usuarios' => $usuarios]);
     }
 
+
+    // =========================
+    // ✏️ FORMULARIO EDITAR USUARIO
+    // =========================
     public function editar_usuario($id = null)
     {
-        $usuarioModel = new UsuarioModel();
-        $planModel = new PlanModel();
+        $usuarioModel = new DatosUsuarioModel();
+        $perfilModel  = new PerfilModel();
+        $planModel    = new PlanModel();
 
         $usuario = $usuarioModel->find($id);
 
@@ -67,30 +71,50 @@ class Admin extends BaseController
             throw new PageNotFoundException("Usuario no encontrado");
         }
 
+        $perfil = $perfilModel->where('id_usuario', $id)->first();
         $planes = $planModel->findAll();
 
         return view('admin/editar_usuario', [
             'usuario' => $usuario,
-            'planes' => $planes
+            'perfil'  => $perfil,
+            'planes'  => $planes
         ]);
     }
 
+
+    // =========================
+    // 💾 ACTUALIZAR USUARIO
+    // =========================
     public function actualizar_usuario($id = null)
     {
-        $usuarioModel = new UsuarioModel();
+        $usuarioModel = new DatosUsuarioModel();
+        $perfilModel  = new PerfilModel();
 
-        $data = [
-            'nombre' => $this->request->getPost('nombre'),
-            'apellido' => $this->request->getPost('apellido'),
-            'cedula' => $this->request->getPost('cedula'),
-            'plan_pagado' => $this->request->getPost('plan_pagado'),
-            'clases_usadas' => $this->request->getPost('clases_usadas'),
-            'clases_restantes' => $this->request->getPost('clases_restantes'),
+        // datos personales
+        $dataUsuario = [
+            'nombre'    => $this->request->getPost('nombre'),
+            'apellido'  => $this->request->getPost('apellido'),
+            'cedula'    => $this->request->getPost('cedula'),
+            'correo'    => $this->request->getPost('correo'),
+            'telefono'  => $this->request->getPost('telefono'),
+            'direccion' => $this->request->getPost('direccion'),
+            'genero'    => $this->request->getPost('genero'),
         ];
 
-        $usuarioModel->update($id, $data);
+        // credenciales
+        $dataPerfil = [
+            'id_rol' => $this->request->getPost('id_rol')
+        ];
 
-        return redirect()->to(base_url('admin/usuarios'))->with('mensaje', 'Usuario actualizado correctamente');
+        $usuarioModel->update($id, $dataUsuario);
+
+        $perfil = $perfilModel->where('id_usuario', $id)->first();
+        if ($perfil) {
+            $perfilModel->update($perfil['id_perfil'], $dataPerfil);
+        }
+
+        return redirect()->to(base_url('admin/usuarios'))
+                         ->with('mensaje', 'Usuario actualizado correctamente');
     }
 
 
@@ -112,7 +136,7 @@ class Admin extends BaseController
     public function reservas()
     {
         $reservaModel = new ReservaModel();
-        $reservas = $reservaModel->getAll();
+        $reservas = $reservaModel->getAll();  // lo corregiremos cuando envíes el modelo
 
         return view('admin/reservas', ['reservas' => $reservas]);
     }

@@ -12,9 +12,6 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Cédula</th>
-                        <th>Plan Pagado</th>
-                        <th>Clases Usadas</th>
-                        <th>Clases Restantes</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -25,13 +22,10 @@
                             <td><?= esc($usuario['nombre']) ?></td>
                             <td><?= esc($usuario['apellido']) ?></td>
                             <td><?= esc($usuario['cedula']) ?></td>
-                            <td><?= esc($usuario['plan_pagado']) ?></td>
-                            <td><?= esc($usuario['clases_usadas']) ?></td>
-                            <td><?= esc($usuario['clases_restantes']) ?></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="<?= base_url('admin/editar_usuario/'.$usuario['id']); ?>" class="btn-edit">Editar</a>
-                                    <a href="<?= base_url('admin/eliminar_usuario/'.$usuario['id']); ?>" 
+                                    <a href="<?= base_url('admin/editar_usuario/'.$usuario['id_usuario']); ?>" class="btn-edit">Editar</a>
+                                    <a href="<?= base_url('admin/eliminar_usuario/'.$usuario['id_usuario']); ?>" 
                                        class="btn-delete"
                                        onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">
                                        Eliminar

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
-//use App\Models\UsuarioModel;
+
+use App\Models\PerfilModel;
 
 class Auth extends BaseController
 {
@@ -11,36 +12,48 @@ class Auth extends BaseController
         return view('pagina/login');
     }
 
-   /* public function acceder()
+    public function acceder()
     {
-        $username = trim($this->request->getPost('username'));
-        $password = (string) $this->request->getPost('password');
+        $usuario = $this->request->getPost('username');
+        $password = $this->request->getPost('password');
 
-        $model = new UsuarioModel();
-        $user  = $model->where('username', $username)->first();
+        $perfilModel = new PerfilModel();
+        $perfil = $perfilModel->login($usuario, $password);
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
-            return redirect()->back()->withInput()->with('error', 'Usuario o contraseña incorrectos.');
+        if (!$perfil) {
+            return redirect()->back()->with('error', 'Credenciales incorrectas');
         }
 
+        // Guardar sesión
         session()->set([
-            'uid'      => $user['id'],
-            'username' => $user['username'],
-            'isLogged' => true,
+            'id_usuario' => $perfil['id_usuario'],
+            'id_rol'     => $perfil['id_rol'],
+            'logueado'   => true
         ]);
 
-        return redirect()->to(site_url('empleados')); // página de inicio tras login
-    }*/
+        // Redirección según rol
+        switch ($perfil['id_rol']) {
+            case 1: // Admin
+            case 2: // Otro rol de admin
+                return redirect()->to('/admin/dashboard_admin');
+
+            case 3: // Usuario normal
+                return redirect()->to('/usuarios/dashboard');
+
+            default:
+                session()->destroy();
+                return redirect()->to('/login')->with('error', 'Rol no válido');
+        }
+    }
 
     public function salir()
     {
         session()->destroy();
-        return redirect()->to(site_url('login'));
+        return redirect()->to('login');
     }
 
     public function crear_usuario()
     {
         return view('pagina/create_l');
-
     }
 }

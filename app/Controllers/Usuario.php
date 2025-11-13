@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\UsuarioModel;
+use App\Models\DatosUsuarioModel;
 use App\Models\ClaseModel;
 use App\Models\ReservaModel;
 
@@ -13,12 +13,12 @@ class Usuario extends BaseController
     // =========================
     public function dashboard_usuario()
     {
-        $usuarioModel = new UsuarioModel();
+        $usuarioModel = new DatosUsuarioModel();
         $reservaModel = new ReservaModel();
 
         // Usuario temporal (hasta implementar login)
         $idUsuario = 1;
-        $usuario = $usuarioModel->getById($idUsuario);
+        $usuario = $usuarioModel->find($idUsuario);
         $clases = $reservaModel->getByUsuario($idUsuario);
 
         $data = [
@@ -65,7 +65,7 @@ class Usuario extends BaseController
     // =========================
     public function perfil()
 {
-    $usuarioModel = new \App\Models\UsuarioModel();
+    $usuarioModel = new \App\Models\DatosUsuarioModel();
 
     // Obtener ID del usuario desde sesión
     $id_usuario = session()->get('id_usuario');
